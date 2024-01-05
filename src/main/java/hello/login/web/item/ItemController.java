@@ -45,7 +45,6 @@ public class ItemController {
 
     @PostMapping("/add")
     public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-
         //특정 필드 예외가 아닌 전체 예외
         if (form.getPrice() != null && form.getQuantity() != null) {
             int resultPrice = form.getPrice() * form.getQuantity();
@@ -53,12 +52,10 @@ public class ItemController {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
         }
-
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "items/addForm";
         }
-
         //성공 로직
         Item item = new Item();
         item.setItemName(form.getItemName());
@@ -70,17 +67,14 @@ public class ItemController {
         redirectAttributes.addAttribute("status", true);
         return "redirect:/items/{itemId}";
     }
-
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "items/editForm";
     }
-
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
-
         //특정 필드 예외가 아닌 전체 예외
         if (form.getPrice() != null && form.getQuantity() != null) {
             int resultPrice = form.getPrice() * form.getQuantity();
@@ -88,12 +82,10 @@ public class ItemController {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
         }
-
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "items/editForm";
         }
-
         Item itemParam = new Item();
         itemParam.setItemName(form.getItemName());
         itemParam.setPrice(form.getPrice());
@@ -102,5 +94,4 @@ public class ItemController {
         itemRepository.update(itemId, itemParam);
         return "redirect:/items/{itemId}";
     }
-
 }
